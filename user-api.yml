@@ -1,0 +1,80 @@
+openapi: 3.0.2
+servers:
+  - url: /v3
+info:
+  version: 1.0.0
+  title: User in-memory storage
+tags:
+  - name: user
+    description: Implementing an in-memory User storage client-server communication
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: Adding user to the storage
+      description: Adding user to the storage
+      operationId: addUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:  
+      requestBody:
+          description: Add a new User to the storage
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  '/user/{userId}':
+    get:
+      tags:
+        - user
+      summary: Get a User by its ID
+      description: Get a User by its ID
+      operationId: getUser
+      parameters:
+      responses:
+    post:
+      tags:
+        - user
+      summary: Update an existing User in storage
+      description: Update an existing User in storage
+      operationId: updateUser
+      parameters:
+      responses:
+    delete:
+      tags:
+        - user
+      summary: Delete an existing User in storage
+      description: Delete an existing User in storage
+      operationId: deleteUser
+      parameters:
+      responses:
+  
+components:
+  schemas:
+    User:
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Alexey
+        email:
+          type: string
+          example: litmo@litmo.ru
+  requestBodies:
+    User:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+      description: User being added to the storage
