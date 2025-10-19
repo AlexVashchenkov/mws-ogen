@@ -15,20 +15,90 @@ paths:
       summary: Adding user to the storage
       description: Adding user to the storage
       operationId: addUser
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:  
       requestBody:
-          description: Add a new User to the storage
-          required: true
+        description: Add a new User to the storage
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/User'
+      responses:  
+        '201':
+          description: User successfully created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    get:
+        tags:
+          - user
+        summary: Get all Users from the storage
+        description: Get all Users from the storage
+        operationId: listUsers
+        responses:  
+          '200':
+            description: List of users
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/User'
+          '400':
+            description: Invalid input data
+            content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          '500':
+            description: Internal server error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+          default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+      
   '/user/{userId}':
     get:
       tags:
@@ -37,7 +107,47 @@ paths:
       description: Get a User by its ID
       operationId: getUser
       parameters:
+        - name: userId
+          in: path
+          description: ID of User to retrieve
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
     post:
       tags:
         - user
@@ -45,7 +155,62 @@ paths:
       description: Update an existing User in storage
       operationId: updateUser
       parameters:
+        - name: userId
+          in: path
+          description: ID of User to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
       responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
     delete:
       tags:
         - user
@@ -53,13 +218,48 @@ paths:
       description: Delete an existing User in storage
       operationId: deleteUser
       parameters:
+        - name: userId
+          in: path
+          description: ID of User to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
   
 components:
   schemas:
     User:
-      required:
-        - name
+      type: object
       properties:
         id:
           type: integer
@@ -67,14 +267,9 @@ components:
           example: 1
         name:
           type: string
-          example: Alexey
+          example: "Alexey"
         email:
           type: string
-          example: litmo@litmo.ru
-  requestBodies:
-    User:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/User'
-      description: User being added to the storage
+          example: "litmo@litmo.ru"
+      required:
+        - name
